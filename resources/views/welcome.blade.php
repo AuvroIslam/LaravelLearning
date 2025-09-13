@@ -5,7 +5,7 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Welcome to Ninja Network</h1>
+    <h1>Welcome to Ninja Network, {{ $name }}</h1>
     <a href="/ninjas">Ninja List</a>
 </body>
 </html>

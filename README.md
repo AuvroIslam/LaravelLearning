@@ -1,6 +1,6 @@
 # Laravel Learning Journey - Ninja Network
 
-Learning Laravel fundamentals through building the **Ninja Network** application.
+Learning Laravel fundamentals: **Route Wildcards & View Data**
 
 ## 🚀 Quick Setup
 
@@ -11,55 +11,81 @@ laravel new ninja_network
 **Local Development:** `ninja_network.test`
 
 ![Project Preview](previews/image.png)
+![Route Wildcards](previews/image1.png)
+![View Data](previews/image2.png)
 
-## 🎯 Core Laravel Concepts
+## 🎯 Route Wildcards & View Data
 
-### Routes and Views
-Laravel uses routes to connect URLs to views or controllers.
+### Route Wildcards
+Use `{}` to capture URL parameters:
 
-#### Basic Route Example
 ```php
-// In routes/web.php
-Route::get('/ninjas', function() {
-    return view('ninjas.index');
+// Capture ID from URL: /ninjas/1, /ninjas/2, etc.
+Route::get('/ninjas/{id}', function ($id) {
+    return view('ninjas.show', ['id' => $id]);
 });
 ```
 
 **How it works:**
-1. User visits `/ninjas` URL
-2. Laravel looks for this route in `routes/web.php`
-3. Route returns a view from `resources/views/ninjas/index.blade.php`
+- `/ninjas/1` → `$id = 1`
+- `/ninjas/2` → `$id = 2`
+- Any number after `/ninjas/` gets captured
 
-### Blade Templating
-We use **Blade** to create dynamic views with special features:
+### Passing Data to Views
 
+#### 1. Simple Data
 ```php
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+Route::get('/', function () {
+    return view('welcome', ['name' => 'Auvro']);
+});
 ```
 
-**Blade Features:**
-- `{{ }}` - Echo variables/data
-- `@if`, `@foreach` - Control structures  
-- `@extends`, `@section` - Template inheritance
-- `{!! !!}` - Raw HTML output
-
-### File Structure
-```
-routes/
-  web.php           ← Define your routes here
-resources/
-  views/
-    welcome.blade.php     ← Your views here
-    ninjas/
-      index.blade.php     ← Organized in folders
+#### 2. Array Data
+```php
+Route::get('/ninjas', function () {
+    $ninjas = [
+        ['name'=>'Auvro', 'skill'=>'Laravel', 'id'=>1],
+        ['name'=>'Oitij', 'skill'=>'Vue', 'id'=>2]
+    ];
+    return view('ninjas.index', ['ninjas' => $ninjas]);
+});
 ```
 
-##  How Everything Works
+### Using Data in Blade Views
 
-1. **Request comes in** → `ninja_network.test/ninjas`
-2. **Laravel checks routes** → `routes/web.php`
-3. **Route found** → `Route::get('/ninjas', ...)`
-4. **View returned** → `resources/views/ninjas/index.blade.php`
-5. **Blade processes** → Dynamic content rendered
-6. **HTML sent to browser** → User sees the page
+#### Display Simple Data
+```blade
+<h1>Welcome to Ninja Network, {{ $name }}</h1>
+```
+
+#### Display Array Data
+```blade
+<a href="/ninjas/{{ $ninjas[0]['id'] }}">
+    {{ $ninjas[0]['name'] }} - {{ $ninjas[0]['skill'] }}
+</a>
+```
+
+#### Display Wildcard Data
+```blade
+<p>Ninja ID: {{ $id }}</p>
+```
+
+## 🛠️ Complete Flow Example
+
+1. **User visits:** `/ninjas/1`
+2. **Route matches:** `Route::get('/ninjas/{id}'...)`
+3. **Wildcard captured:** `$id = 1`
+4. **Data passed:** `['id' => $id]`
+5. **View rendered:** `ninjas.show.blade.php`
+6. **Output:** `Ninja ID: 1`
+
+## 📁 File Structure
+```
+routes/web.php              ← Define routes with wildcards
+resources/views/
+  welcome.blade.php         ← Receives 'name' data
+  ninjas/
+    index.blade.php         ← Receives 'ninjas' array
+    show.blade.php          ← Receives 'id' from wildcard
+```
 
