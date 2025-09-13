@@ -10,16 +10,13 @@
     <a href="/">Home</a>
     <h2>Ninja List</h2>
     <ul>
-        <li>
-            <a href="/ninjas/{{ $ninjas[0]['id'] }}">
-                {{ $ninjas[0]['name'] }} - {{ $ninjas[0]['skill'] }}
-            </a>
-        </li>
-        <li>
-            <a href="/ninjas/{{ $ninjas[1]['id'] }}">
-                {{ $ninjas[1]['name'] }} - {{ $ninjas[1]['skill'] }}
-            </a>
-        </li>
+        @foreach($ninjas as $ninja)
+            <li>
+                <a href="/ninjas/{{ $ninja['id'] }}">
+                    {{ $ninja['name'] }} - {{ $ninja['skill'] }}
+                </a>
+            </li>
+        @endforeach
     </ul>
 </body>
 </html>

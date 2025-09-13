@@ -1,6 +1,6 @@
 # Laravel Learning Journey - Ninja Network
 
-Learning Laravel fundamentals: **Route Wildcards & View Data**
+Learning Laravel fundamentals: **Blade Directives**
 
 ## 🚀 Quick Setup
 
@@ -14,78 +14,99 @@ laravel new ninja_network
 ![Route Wildcards](previews/image1.png)
 ![View Data](previews/image2.png)
 
-## 🎯 Route Wildcards & View Data
+## 🎯 Blade Directives
 
-### Route Wildcards
-Use `{}` to capture URL parameters:
+### Core Directives Used
 
-```php
-// Capture ID from URL: /ninjas/1, /ninjas/2, etc.
-Route::get('/ninjas/{id}', function ($id) {
-    return view('ninjas.show', ['id' => $id]);
-});
-```
-
-**How it works:**
-- `/ninjas/1` → `$id = 1`
-- `/ninjas/2` → `$id = 2`
-- Any number after `/ninjas/` gets captured
-
-### Passing Data to Views
-
-#### 1. Simple Data
-```php
-Route::get('/', function () {
-    return view('welcome', ['name' => 'Auvro']);
-});
-```
-
-#### 2. Array Data
-```php
-Route::get('/ninjas', function () {
-    $ninjas = [
-        ['name'=>'Auvro', 'skill'=>'Laravel', 'id'=>1],
-        ['name'=>'Oitij', 'skill'=>'Vue', 'id'=>2]
-    ];
-    return view('ninjas.index', ['ninjas' => $ninjas]);
-});
-```
-
-### Using Data in Blade Views
-
-#### Display Simple Data
+#### 1. Echo Directive `{{ }}`
+Display variables safely (auto-escaped):
 ```blade
 <h1>Welcome to Ninja Network, {{ $name }}</h1>
-```
-
-#### Display Array Data
-```blade
-<a href="/ninjas/{{ $ninjas[0]['id'] }}">
-    {{ $ninjas[0]['name'] }} - {{ $ninjas[0]['skill'] }}
-</a>
-```
-
-#### Display Wildcard Data
-```blade
 <p>Ninja ID: {{ $id }}</p>
+<a href="/ninjas/{{ $ninja['id'] }}">{{ $ninja['name'] }}</a>
 ```
 
-## 🛠️ Complete Flow Example
-
-1. **User visits:** `/ninjas/1`
-2. **Route matches:** `Route::get('/ninjas/{id}'...)`
-3. **Wildcard captured:** `$id = 1`
-4. **Data passed:** `['id' => $id]`
-5. **View rendered:** `ninjas.show.blade.php`
-6. **Output:** `Ninja ID: 1`
-
-## 📁 File Structure
+#### 2. Foreach Loop `@foreach`
+Loop through arrays:
+```blade
+@foreach($ninjas as $ninja)
+    <li>
+        <a href="/ninjas/{{ $ninja['id'] }}">
+            {{ $ninja['name'] }} - {{ $ninja['skill'] }}
+        </a>
+    </li>
+@endforeach
 ```
-routes/web.php              ← Define routes with wildcards
-resources/views/
-  welcome.blade.php         ← Receives 'name' data
-  ninjas/
-    index.blade.php         ← Receives 'ninjas' array
-    show.blade.php          ← Receives 'id' from wildcard
+
+#### 3. Conditional `@if`
+Show content based on conditions:
+```blade
+@if(5 > 2)
+    <p>5 is greater than 2</p>
+@endif
 ```
+
+### Other Useful Blade Directives
+
+#### Conditionals
+```blade
+@if($user->isAdmin())
+    <p>Welcome Admin!</p>
+@elseif($user->isMember())
+    <p>Welcome Member!</p>
+@else
+    <p>Welcome Guest!</p>
+@endif
+
+@unless($user->isPremium())
+    <p>Upgrade to Premium!</p>
+@endunless
+```
+
+#### Loops
+```blade
+@for($i = 0; $i < 10; $i++)
+    <p>Number: {{ $i }}</p>
+@endfor
+
+@while($condition)
+    <p>Keep looping...</p>
+@endwhile
+
+@forelse($items as $item)
+    <li>{{ $item }}</li>
+@empty
+    <p>No items found</p>
+@endforelse
+```
+
+#### Raw HTML
+```blade
+{!! $htmlContent !!}  <!-- Unescaped output -->
+{{ $safeContent }}    <!-- Escaped output (safer) -->
+```
+
+#### Comments
+```blade
+{{-- This is a Blade comment --}}
+<!-- This is an HTML comment -->
+```
+
+#### Include Other Views
+```blade
+@include('partials.header')
+@include('partials.sidebar', ['data' => $variable])
+```
+
+## �️ Blade Syntax Summary
+
+| Directive | Purpose | Example |
+|-----------|---------|---------|
+| `{{ }}` | Echo (escaped) | `{{ $name }}` |
+| `{!! !!}` | Echo (unescaped) | `{!! $html !!}` |
+| `@if/@endif` | Conditionals | `@if($condition)` |
+| `@foreach/@endforeach` | Loop arrays | `@foreach($items as $item)` |
+| `@for/@endfor` | For loops | `@for($i=0; $i<10; $i++)` |
+| `@include` | Include views | `@include('header')` |
+| `{{-- --}}` | Comments | `{{-- Comment --}}` |
 
