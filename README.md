@@ -1,6 +1,6 @@
 # Laravel Learning Journey - Ninja Network
 
-Learning Laravel fundamentals: **Blade Directives**
+Learning Laravel fundamentals: **Layouts & Slots**
 
 ## 🚀 Quick Setup
 
@@ -11,102 +11,102 @@ laravel new ninja_network
 **Local Development:** `ninja_network.test`
 
 ![Project Preview](previews/image.png)
-![Route Wildcards](previews/image1.png)
-![View Data](previews/image2.png)
 
-## 🎯 Blade Directives
+## 🎯 Layouts & Slots
 
-### Core Directives Used
+### 1. Layout Must Be in Components Folder
+Create layout file in: `resources/views/components/layout.blade.php`
 
-#### 1. Echo Directive `{{ }}`
-Display variables safely (auto-escaped):
 ```blade
-<h1>Welcome to Ninja Network, {{ $name }}</h1>
-<p>Ninja ID: {{ $id }}</p>
-<a href="/ninjas/{{ $ninja['id'] }}">{{ $ninja['name'] }}</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninja Network</title>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/ninjas">Ninja List</a>
+        <a href="/ninjas/create">Create Ninja</a>
+    </nav>
+    <div class="container">
+        {{ $slot }}
+    </div>
+</body>
+</html>
 ```
 
-#### 2. Foreach Loop `@foreach`
-Loop through arrays:
+### 2. Using `<x-layout>` Component
+Use the layout in any view:
+
 ```blade
-@foreach($ninjas as $ninja)
-    <li>
-        <a href="/ninjas/{{ $ninja['id'] }}">
-            {{ $ninja['name'] }} - {{ $ninja['skill'] }}
-        </a>
-    </li>
-@endforeach
+<x-layout>
+    <h1>Welcome to Ninja Network, {{ $name }}</h1>
+</x-layout>
 ```
 
-#### 3. Conditional `@if`
-Show content based on conditions:
 ```blade
-@if(5 > 2)
-    <p>5 is greater than 2</p>
-@endif
+<x-layout>
+    <h2>Ninja List</h2>
+    <ul>
+        @foreach($ninjas as $ninja)
+            <li>
+                <a href="/ninjas/{{ $ninja['id'] }}">
+                    {{ $ninja['name'] }} - {{ $ninja['skill'] }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</x-layout>
 ```
 
-### Other Useful Blade Directives
+### 3. Slot - Everything Renders Inside
+- **No need to write HTML tags** (DOCTYPE, html, head, body)
+- **Content goes between** `<x-layout>` and `</x-layout>`
+- **`{{ $slot }}`** renders all the content inside the component
 
-#### Conditionals
-```blade
-@if($user->isAdmin())
-    <p>Welcome Admin!</p>
-@elseif($user->isMember())
-    <p>Welcome Member!</p>
-@else
-    <p>Welcome Guest!</p>
-@endif
+### 4. Route Wildcard Matching
+Laravel tries to match routes **from top to bottom**:
 
-@unless($user->isPremium())
-    <p>Upgrade to Premium!</p>
-@endunless
+```php
+Route::get('/ninjas', function () {
+    // This matches /ninjas
+});
+
+Route::get('/ninjas/create', function () {
+    // This matches /ninjas/create (specific route)
+});
+
+Route::get('/ninjas/{id}', function ($id) {
+    // This matches /ninjas/1, /ninjas/2, etc.
+});
 ```
 
-#### Loops
-```blade
-@for($i = 0; $i < 10; $i++)
-    <p>Number: {{ $i }}</p>
-@endfor
+**Important:** Specific routes (`/ninjas/create`) must come **before** wildcard routes (`/ninjas/{id}`)
 
-@while($condition)
-    <p>Keep looping...</p>
-@endwhile
+## 🛠️ How Layouts Work
 
-@forelse($items as $item)
-    <li>{{ $item }}</li>
-@empty
-    <p>No items found</p>
-@endforelse
+1. **Create layout** → `components/layout.blade.php`
+2. **Define slot** → `{{ $slot }}` where content goes
+3. **Use in views** → `<x-layout>Your content</x-layout>`
+4. **Laravel renders** → Wraps your content with the layout
+
+## 📁 File Structure
+```
+resources/views/
+  components/
+    layout.blade.php        ← Layout component with {{ $slot }}
+  welcome.blade.php         ← Uses <x-layout>
+  ninjas/
+    index.blade.php         ← Uses <x-layout>
+    show.blade.php          ← Uses <x-layout>
 ```
 
-#### Raw HTML
-```blade
-{!! $htmlContent !!}  <!-- Unescaped output -->
-{{ $safeContent }}    <!-- Escaped output (safer) -->
-```
-
-#### Comments
-```blade
-{{-- This is a Blade comment --}}
-<!-- This is an HTML comment -->
-```
-
-#### Include Other Views
-```blade
-@include('partials.header')
-@include('partials.sidebar', ['data' => $variable])
-```
-
-## �️ Blade Syntax Summary
-
-| Directive | Purpose | Example |
-|-----------|---------|---------|
-| `{{ }}` | Echo (escaped) | `{{ $name }}` |
-| `{!! !!}` | Echo (unescaped) | `{!! $html !!}` |
-| `@if/@endif` | Conditionals | `@if($condition)` |
-| `@foreach/@endforeach` | Loop arrays | `@foreach($items as $item)` |
-| `@for/@endfor` | For loops | `@for($i=0; $i<10; $i++)` |
-| `@include` | Include views | `@include('header')` |
-| `{{-- --}}` | Comments | `{{-- Comment --}}` |
+## ✅ Benefits
+- **DRY (Don't Repeat Yourself)** - No duplicate HTML structure
+- **Consistent navigation** - Same nav on every page
+- **Easy maintenance** - Change layout once, affects all pages
+- **Clean views** - Focus on content, not HTML boilerplate
 

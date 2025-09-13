@@ -12,7 +12,9 @@ Route::get('/ninjas', function () {
     ];
     return view('ninjas.index', ['ninjas' => $ninjas]);
 });
-
+Route::get('/ninjas/create', function () {
+    return view('ninjas.create');
+});
 Route::get('/ninjas/{id}', function ($id) {
   
     return view('ninjas.show', ['id' => $id]);

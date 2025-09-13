@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ninja Details</title>
-</head>
-</head>
-<body>
+<x-layout>
     <h1>Ninja Details</h1>
     <p>Ninja ID: {{ $id }}</p>
-    
-</body>
-</html>
+</x-layout>
