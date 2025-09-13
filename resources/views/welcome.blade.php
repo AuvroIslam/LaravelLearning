@@ -6,5 +6,6 @@
 </head>
 <body>
     <h1>Welcome to Ninja Network</h1>
+    <a href="/ninjas">Ninja List</a>
 </body>
 </html>

@@ -6,5 +6,6 @@
 </head>
 <body>
     <h1>Ninja Network</h1>
+    <a href="/">Home</a>
 </body>
 </html>

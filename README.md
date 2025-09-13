@@ -54,7 +54,7 @@ resources/
       index.blade.php     ← Organized in folders
 ```
 
-## �️ How Everything Works
+##  How Everything Works
 
 1. **Request comes in** → `ninja_network.test/ninjas`
 2. **Laravel checks routes** → `routes/web.php`
